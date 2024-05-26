@@ -54,7 +54,7 @@ class HexGrid {
       for (var j = 0; j < this.height_in_hexes; j++) {
         let { x, y } = this.centers[i][j]
 
-        this.hexes[i][j] = new Hexagon(x, y, this.radius)
+        this.hexes[i][j] = new Hexagon(i, j, x, y, this.radius)
       }
     }
 
@@ -92,9 +92,12 @@ class HexGrid {
 }
 
 class Polygon {
-  constructor(x, y, r, sides) {
+  constructor(i, j, x, y, r, sides) {
     // Length to vertexes
     this.r = r
+    // GridCoords
+    this.i = i
+    this.j = j
     // center of polygon
     this.x = x
     this.y = y
@@ -131,8 +134,8 @@ class Polygon {
 }
 
 class Hexagon extends Polygon {
-  constructor(x, y, r) {
-    super(x, y, r, 6)
+  constructor(i, j, x, y, r) {
+    super(i, j, x, y, r, 6)
   }
 }
 
