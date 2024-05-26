@@ -13,9 +13,17 @@ function draw() {
 }
 
 function mousePressed() {
+  grid.clear_all()
+
   let hex = grid.coords_to_hex(mouseX, mouseY)
 
   hex.selected ^= true
+
+  let neighbors = grid.get_neighbors(hex)
+
+  for (let n of neighbors) {
+    n.is_neighbor = true
+  }
 }
 
 class HexGrid {
@@ -89,6 +97,40 @@ class HexGrid {
     }
     return min_hex;
   }
+
+  clear_all() {
+    for (var i = 0; i < this.width_in_hexes; i++) {
+      for (var j = 0; j < this.height_in_hexes; j++) {
+        let new_hex = this.hexes[i][j]
+        new_hex.selected = false
+        new_hex.is_neighbor = false
+      }
+    }
+  }
+
+  get_neighbors(hex) {
+    let i = hex.i
+    let j = hex.j
+
+    let neighbors = []
+
+    let jodd = j & 1
+    let jeven = (j & 1) ^ 1
+
+    // east
+    neighbors.push(this.hexes[i + jodd][j - 1])
+    neighbors.push(this.hexes[i + jodd][j + 1])
+    // west
+    neighbors.push(this.hexes[i - jeven][j - 1])
+    neighbors.push(this.hexes[i - jeven][j + 1])
+
+    // north
+    neighbors.push(this.hexes[i][j + 2])
+    // south
+    neighbors.push(this.hexes[i][j - 2])
+
+    return neighbors
+  }
 }
 
 class Polygon {
@@ -102,7 +144,6 @@ class Polygon {
     this.x = x
     this.y = y
     this.sides = sides
-    this.selected = false
   }
 
   show(rotation = 0) {
@@ -110,11 +151,6 @@ class Polygon {
 
     push()
 
-    if (this.selected) {
-      fill(100, 0, 0)
-    } else {
-      fill(200)
-    }
 
     translate(this.x, this.y);
     rotate(rotation)
@@ -129,6 +165,7 @@ class Polygon {
     }
     endShape(CLOSE)
 
+
     pop()
   }
 }
@@ -136,6 +173,24 @@ class Polygon {
 class Hexagon extends Polygon {
   constructor(i, j, x, y, r) {
     super(i, j, x, y, r, 6)
+    this.selected = false
+    this.is_neighbor = false
+  }
+
+  show(rotation = 0) {
+    push()
+
+    if (this.selected) {
+      fill(100, 0, 0)
+    } else if (this.is_neighbor) {
+      fill(0, 100, 0)
+    } else {
+      fill(200)
+    }
+
+    super.show(rotation)
+
+    pop()
   }
 }
 
