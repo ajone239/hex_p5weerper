@@ -51,8 +51,8 @@ class HexGrid {
 
   make_bombs(bomb_count) {
     for (let i = 0; i < bomb_count; i++) {
-      let x = int(floor(random(1, this.width_in_hexes - 1)))
-      let y = int(floor(random(1, this.height_in_hexes - 1)))
+      let x = int(floor(random(1, this.width_in_hexes - 5)))
+      let y = int(floor(random(2, this.height_in_hexes - 3)))
 
       let hex = this.hexes[x][y]
       hex.make_bomb()
@@ -76,6 +76,52 @@ class HexGrid {
       }
     }
   }
+
+  unhide_all_bombs() {
+    for (var i = 0; i < this.width_in_hexes; i++) {
+      for (var j = 0; j < this.height_in_hexes; j++) {
+        let hex = this.hexes[i][j];
+
+        if (hex.is_bomb) {
+          hex.unhide()
+        }
+      }
+    }
+  }
+
+  has_won() {
+    let won = true
+    for (var i = 0; i < this.width_in_hexes; i++) {
+      for (var j = 0; j < this.height_in_hexes; j++) {
+        let hex = this.hexes[i][j];
+        won &= hex.is_bomb || hex.is_show
+      }
+    }
+    return won
+  }
+
+  unhide_connected_zeroes() {
+    for (var i = 0; i < this.width_in_hexes; i++) {
+      for (var j = 0; j < this.height_in_hexes; j++) {
+        let hex = this.hexes[i][j];
+        if (!hex.is_show) {
+          continue
+        }
+
+        let neighbors = this.get_neighbors(hex)
+
+        for (let n of neighbors) {
+          if (n.is_bomb) {
+            continue
+          }
+          if (n.bomb_count == 0 || n.bomb_count == 1) {
+            n.unhide()
+          }
+        }
+      }
+    }
+  }
+
 
   coords_to_hex(x, y) {
     let dist = (x1, y1, x2, y2) => sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
@@ -114,7 +160,6 @@ class HexGrid {
       // west
       { i: i - jeven, j: j - 1 },
       { i: i - jeven, j: j + 1 },
-
       // north
       { i: i, j: j + 2 },
       // south

@@ -13,11 +13,13 @@ class Hexagon extends Polygon {
     push();
 
     if (!this.is_show) {
-      fill(200)
-    } else {
-      if (this.flag) {
+      if (this.is_flag) {
         fill(0, 100, 0);
-      } else if (this.is_bomb) {
+      } else {
+        fill(200)
+      }
+    } else {
+      if (this.is_bomb) {
         fill(10, 0, 0);
       } else {
         fill(100)
@@ -41,6 +43,10 @@ class Hexagon extends Polygon {
 
   unhide() {
     this.is_show = true
+  }
+
+  flag() {
+    this.is_flag = true
   }
 
   make_bomb() {
