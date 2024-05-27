@@ -46,7 +46,7 @@ class Hexagon extends Polygon {
   }
 
   flag() {
-    this.is_flag = true
+    this.is_flag ^= true
   }
 
   make_bomb() {

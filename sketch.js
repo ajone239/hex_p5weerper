@@ -36,7 +36,17 @@ function draw() {
 function mousePressed() {
   let hex = grid.coords_to_hex(mouseX, mouseY)
 
-  if (mouseButton === RIGHT && !hex.is_show) {
+  if (
+    (
+      mouseButton === RIGHT ||
+      (
+        keyCode === SHIFT &&
+        keyIsPressed == true
+      )
+    )
+    &&
+    !hex.is_show
+  ) {
     hex.flag()
     return
   }
