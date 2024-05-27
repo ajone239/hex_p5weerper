@@ -41,7 +41,7 @@ function mousePressed() {
       mouseButton === RIGHT ||
       (
         keyCode === SHIFT &&
-        keyIsPressed == true
+        keyIsPressed
       )
     )
     &&
